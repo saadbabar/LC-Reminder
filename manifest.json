@@ -3,11 +3,7 @@
     "version": "1.0.0",
     "description": "Extension uses concept of spaced repitition to remind you to do Leetcode problems again to retain concepts. Made for students and graduates to solidify their understanding of data structures for recruiting",
     "manifest_version": 3,
-    "authors": [
-        "Saad Babar",
-        "Saif Siddiqui",
-        "Omer Junedi"
-    ],
+    "author": "Saad Babar, Saif Siddiqui, Omer Junedi",
     "action": {
         "default_popup": "index.html",
         "default_title": "LC-Reminder"
