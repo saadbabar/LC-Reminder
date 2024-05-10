@@ -25,3 +25,27 @@ async function fetchData() {
 
 // Function call
 fetchData();
+
+// script.js - JavaScript to handle username input and storage
+
+document.addEventListener('DOMContentLoaded', function () {
+    const usernameInput = document.getElementById('usernameInput');
+    const saveButton = document.getElementById('saveButton');
+
+    // Load saved username if exists
+    chrome.storage.sync.get(['leetcodeUsername'], function (result) {
+        if (result.leetcodUsername) {
+            usernameInput.value = result.leetcodUsername;
+        }
+    });
+
+    saveButton.addEventListener('click', function () {
+        const username = usernameInput.value.trim();
+        if (username) {
+            // Save username to storage
+            chrome.storage.sync.set({ 'leetcodeUsername': username }, function () {
+                console.log('LeetCode username saved:', username);
+            });
+        }
+    });
+});
