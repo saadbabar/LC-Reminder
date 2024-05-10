@@ -1,7 +1,7 @@
 async function fetchData() {
     try {
         // make api request access
-        const response = await fetch('https://alfa-leetcode-api.onrender.com/:username/acSubmission');
+        const response = await fetch('https://alfa-leetcode-api.onrender.com/saadbabar/acSubmission');
 
 
         // check if response is ok
