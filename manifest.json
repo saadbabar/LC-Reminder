@@ -4,6 +4,10 @@
     "description": "Extension uses concept of spaced repitition to remind you to do Leetcode problems again to retain concepts. Made for students and graduates to solidify their understanding of data structures for recruiting",
     "manifest_version": 3,
     "author": "Saad Babar, Saif Siddiqui, Omer Junedi",
+    "permissions": [
+        "tabs", 
+        "https://alfa-leetcode-api.onrender.com/*"
+    ],
     "action": {
         "default_popup": "index.html",
         "default_title": "LC-Reminder"
