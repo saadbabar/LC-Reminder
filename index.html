@@ -6,12 +6,14 @@
     <title>LC-Reminder</title>
 </head>
 <body>
-    <div>
-        <h2>Dashboard</h2>
-        <input type = "text" id="usernameinput" placeholer="Enter Leetcode username">
-        <button id = "saveButton"> Save</button>
-    </div>
     
+        <h2>Dashboard</h2>
+        <form id="myForm">
+            <input type = "text" id="usernameinput" placeholder="Enter LC Username">
+            <button type="submit" > Submit</button>
+        </form>
+        <div id="output"></div>
+        <script src="content.js"></script>
 </body>
 <script src="script.js"></script>
 </html>

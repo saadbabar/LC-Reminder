@@ -6,3 +6,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('button clicked')
     }
 })
+
+chrome.runtime.onMessage.addListener(async function(message, sender, sendResponse) {
+    console.log("this is the onMessage Listener firing")
+    if (message.action === "showPopup") {
+    //   sendResponse({})
+      // add logic to showPopup
+    }
+});
