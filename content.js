@@ -50,3 +50,17 @@ function getUsername() {
    
 }
 
+
+// injecting code into leetcode webpage, for when user clicks submit
+
+document.addEventListener('DOMContentLoaded', function() {
+  //find submit button on leetcode page and attach an event listener
+
+  const lcSubmitButton = document.querySelector('console-submit-button');
+  lcSubmitButton.addEventListener('click', function() {
+    //send message to background script
+
+    chrome.runtime.sendMessage({action: 'showPopup'})
+  })
+})
+

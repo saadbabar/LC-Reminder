@@ -14,3 +14,12 @@ chrome.runtime.onMessage.addListener(async function(message, sender, sendRespons
       // add logic to showPopup
     }
 });
+
+
+//manage popup that appears when clicking submit on leetcode
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    if (message.action === 'showPopup') {
+        chrome.action.openPopup();
+    }
+});
