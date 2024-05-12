@@ -1,7 +1,7 @@
 /* 
-    background.js
-    Created: May 9, 2024
-    Description:
+background.js
+Created: May 9, 2024
+Description:
         Responsible for checking if we're currently on a leetcode problem. Sends a message to the 
         content script, which manages dom manipulation.
     Related Files:
@@ -33,21 +33,34 @@
     is a concern tho.
 
 */
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    
-    if (changeInfo.url && changeInfo.url.includes("leetcode.com/problems/") && changeInfo.status === 'complete') {
-        console.log("Navigated to a LC problem: ", changeInfo.url);
-  
-        // Extract the problem name from the URL (might need to error handle??)
-        const urlParts = changeInfo.url.split('/');
-        const problemIndex = urlParts.indexOf('problems') + 1;
-        let problemName = urlParts[problemIndex];
-        
-        // Send msg to the content script
-        chrome.tabs.sendMessage(tabId, {
-            type: 'ACTIVE PROBLEM',
-            problem: problemName
-        });
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    if (changeInfo.url && changeInfo.url.includes("leetcode.com/problems/") && !changeInfo.url.includes("submissions")) {
+        try {
+            await chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                files: ['content.js']
+            });
+
+            console.log("Content script injected");
+            const urlParts = changeInfo.url.split('/');
+            const problemIndex = urlParts.indexOf('problems') + 1;
+            let problemName = urlParts[problemIndex];
+            chrome.tabs.sendMessage(tabId, {
+                type: 'ACTIVE PROBLEM',
+                problem: problemName
+            });
+        } catch (err) {
+            console.error("Error injecting content script:", err);
+        }
     }
-    // do jack shit when we're not on an active problem
-  });// listen to messages from content script
+});
+
+
+chrome.runtime.onMessage.addListener((obj, sender, response) => {
+    console.log(obj);
+});

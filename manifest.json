@@ -9,7 +9,8 @@
         "storage",
         "activeTab",
         "runtime",
-        "https://www.leetcode.com/*"
+        "scripting",
+        "https://leetcode.com/*"
     ],
 
     "background": {
@@ -18,27 +19,27 @@
 
     "content_scripts": [
         {
-            "matches": ["https://www.leetcode.com/problems/*"],
+            "matches": ["https://leetcode.com/problems/*"],
             "js": ["content.js"]
         }
     ],
 
     "host_permissions": [
-        "https://www.leetcode.com/*"
+        "https://leetcode.com/*"
     ],
     "action": {
         "default_popup": "index.html",
         "default_title": "LC-Reminder",
         "default_icon" : {
-            "16": "leetcode-reminder.png",
-            "48": "leetcode-reminder.png",
-            "128": "leetcode-reminder.png"
+            "48": "images/leetcode-reminder.png",
+            "16": "images/leetcode-reminder.png",
+            "128": "images/leetcode-reminder.png"
         }
     },
     "icons": {
-        "16": "leetcode-reminder.png",
-        "48": "leetcode-reminder.png",
-        "128": "leetcode-reminder.png"
+        "16": "images/leetcode-reminder.png",
+        "48": "images/leetcode-reminder.png",
+        "128": "images/leetcode-reminder.png"
     }
     
 }
