@@ -1,37 +1,37 @@
 {
-    "name": "LC-Reminder",
-    "version": "1.0.0",
-    "description": "Master Tech Interviews",
-    "manifest_version": 3,
-    "author": "Saad Babar, Saif Siddiqui, Omer Junedi",
-    "permissions": [
-      "tabs",
-      "storage",
-      "activeTab",
-      "scripting"
-    ],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "content_scripts": [
-      {
-        "matches": ["https://*.leetcode.com/problems/*"],
-        "js": ["content.js"]
-      }
-    ],
-    "action": {
-      "default_popup": "index.html",
-      "default_title": "LC-Reminder",
-      "default_icon": {
-        "48": "images/leetcode-reminder.png",
-        "16": "images/leetcode-reminder.png",
-        "128": "images/leetcode-reminder.png"
-      }
-    },
-    "icons": {
-      "16": "images/leetcode-reminder.png",
+  "name": "LC-Reminder",
+  "version": "1.0.0",
+  "description": "Master Tech Interviews",
+  "manifest_version": 3,
+  "author": "Saad Babar, Saif Siddiqui, Omer Junedi",
+  "permissions": [
+    "tabs",
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.leetcode.com/problems/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "LC-Reminder",
+    "default_icon": {
       "48": "images/leetcode-reminder.png",
+      "16": "images/leetcode-reminder.png",
       "128": "images/leetcode-reminder.png"
     }
+  },
+  "icons": {
+    "16": "images/leetcode-reminder.png",
+    "48": "images/leetcode-reminder.png",
+    "128": "images/leetcode-reminder.png"
   }
+}
   

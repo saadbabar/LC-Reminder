@@ -1,27 +1,6 @@
 // content.js
 
 
-<<<<<<< HEAD
-// function getUsername() {
-//   event.preventDefault();
-//   var userName = document.getElementById('usernameinput').value;
-//   // Do something with the user input, such as sending it to your API
-//   console.log(userName)
-//   document.getElementById('output').innerText = 'You entered: ' + userName;
-// }
-
-
-// // Listen for messages from the background script
-// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-// // Check the message action
-// if (message.action === "showPopup") {
-//   // Your code to show the popup
-//   alert("Submit button clicked on LeetCode!");
-// }
-// })
-
-=======
->>>>>>> 043af45eb7f04feaa8d702127b1f0c75e29a2d5e
 
 (() => {
   console.log("content.js script is injected");
