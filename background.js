@@ -1,7 +1,7 @@
 /* 
-    background.js
-    Created: May 9, 2024
-    Description:
+background.js
+Created: May 9, 2024
+Description:
         Responsible for checking if we're currently on a leetcode problem. Sends a message to the 
         content script, which manages dom manipulation.
     Related Files:
@@ -33,21 +33,36 @@
     is a concern tho.
 
 */
+<<<<<<< HEAD
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     console.log("Listener triggered");
     if (changeInfo.url && changeInfo.url.includes("leetcode.com/problems/") && changeInfo.status === 'complete') {
         console.log("Navigated to a LC problem: ", changeInfo.url);
   
         // Extract the problem name from the URL (might need to error handle??)
+=======
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    if (changeInfo.url && changeInfo.url.includes("leetcode.com/problems/") && !changeInfo.url.includes("submissions")) {
+
+        console.log("sending message to content");
+
+>>>>>>> 043af45eb7f04feaa8d702127b1f0c75e29a2d5e
         const urlParts = changeInfo.url.split('/');
         const problemIndex = urlParts.indexOf('problems') + 1;
         let problemName = urlParts[problemIndex];
-        
-        // Send msg to the content script
+
         chrome.tabs.sendMessage(tabId, {
             type: 'ACTIVE PROBLEM',
             problem: problemName
         });
     }
-    // do jack shit when we're not on an active problem
-  });// listen to messages from content script
+});
+
+chrome.runtime.onMessage.addListener((obj, sender, response) => {    
+    console.log(obj);
+});
