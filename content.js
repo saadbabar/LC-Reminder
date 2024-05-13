@@ -1,23 +1,23 @@
 // // Inject button onto leetcode page
 
 
-function getUsername() {
-  event.preventDefault();
-  var userName = document.getElementById('usernameinput').value;
-  // Do something with the user input, such as sending it to your API
-  console.log(userName)
-  document.getElementById('output').innerText = 'You entered: ' + userName;
-}
+// function getUsername() {
+//   event.preventDefault();
+//   var userName = document.getElementById('usernameinput').value;
+//   // Do something with the user input, such as sending it to your API
+//   console.log(userName)
+//   document.getElementById('output').innerText = 'You entered: ' + userName;
+// }
 
 
-// Listen for messages from the background script
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-// Check the message action
-if (message.action === "showPopup") {
-  // Your code to show the popup
-  alert("Submit button clicked on LeetCode!");
-}
-})
+// // Listen for messages from the background script
+// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+// // Check the message action
+// if (message.action === "showPopup") {
+//   // Your code to show the popup
+//   alert("Submit button clicked on LeetCode!");
+// }
+// })
 
 
 (() => {

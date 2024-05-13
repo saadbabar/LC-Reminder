@@ -34,7 +34,7 @@
 
 */
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    
+    console.log("Listener triggered");
     if (changeInfo.url && changeInfo.url.includes("leetcode.com/problems/") && changeInfo.status === 'complete') {
         console.log("Navigated to a LC problem: ", changeInfo.url);
   
