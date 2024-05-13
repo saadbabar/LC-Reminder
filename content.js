@@ -65,7 +65,12 @@
  }
 
   function handleAccepted() {
-    const difficulty = window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3"); // easiest for now, later we can add a modal
+    let difficulty = window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3"); // easiest for now, later we can add a modal
+    difficulty = Number(difficulty)
+    while (!(1 <= difficulty && difficulty <= 5)) {
+      window.alert("difficulty must be between 1 and 5!")
+      difficulty = Number(window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3")); // easiest for now, later we can add a modal
+    }
     console.log('Difficulty rating entered:', difficulty);
 
     // integrate difficulty w/ backend
