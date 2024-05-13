@@ -40,27 +40,20 @@ function sleep(ms) {
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if (changeInfo.url && changeInfo.url.includes("leetcode.com/problems/") && !changeInfo.url.includes("submissions")) {
-        try {
-            await chrome.scripting.executeScript({
-                target: { tabId: tabId },
-                files: ['content.js']
-            });
 
-            console.log("Content script injected");
-            const urlParts = changeInfo.url.split('/');
-            const problemIndex = urlParts.indexOf('problems') + 1;
-            let problemName = urlParts[problemIndex];
-            chrome.tabs.sendMessage(tabId, {
-                type: 'ACTIVE PROBLEM',
-                problem: problemName
-            });
-        } catch (err) {
-            console.error("Error injecting content script:", err);
-        }
+        console.log("sending message to content");
+
+        const urlParts = changeInfo.url.split('/');
+        const problemIndex = urlParts.indexOf('problems') + 1;
+        let problemName = urlParts[problemIndex];
+
+        chrome.tabs.sendMessage(tabId, {
+            type: 'ACTIVE PROBLEM',
+            problem: problemName
+        });
     }
 });
 
-
-chrome.runtime.onMessage.addListener((obj, sender, response) => {
+chrome.runtime.onMessage.addListener((obj, sender, response) => {    
     console.log(obj);
 });

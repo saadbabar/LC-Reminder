@@ -3,62 +3,84 @@
 
 
 (() => {
+  console.log("content.js script is injected");
+
+
   let cur_problem = "";
-  let isListenerAttached = false;
-
-  function sendMessage(message) {
-    chrome.runtime.sendMessage(message);
-  }
-
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  /*
-    Gets message from background script, alerting that we're on a current problem
-  
-    Message types (type):
-      - ACTIVE PROBLEM: attaches a listener for the submit button
-      ...
-  */
+  let submitButtonElement = 'button[data-e2e-locator="console-submit-button"]';
   chrome.runtime.onMessage.addListener(handleMessage);
-
+  
+  
   function handleMessage(obj, sender, response) {
     const { type, problem } = obj;
     if (type === "ACTIVE PROBLEM") {
       cur_problem = problem;
       attachSubmitListener();
     }
-    chrome.runtime.onMessage.removeListener(handleMessage);
-    sendMessage({ type: type, problem: problem }) // dummy response so shit doesnt bitch  <--- D1 comment google hire this guy
+    // chrome.runtime.onMessage.removeListener(handleMessage); ) 
+    console.log(`problem: ${problem}`);
+    sendMessage({ type: type, problem: problem }); // dummy response so shit doesnt bitch  <--- D1 comment google hire this guy
   }
 
   // Function creates a listener for submit clicks
   function attachSubmitListener() {
-    // if (!isListenerAttached) {
-      const submitButton = document.querySelector('button[data-e2e-locator="console-submit-button"]');
+      const submitButton = document.querySelector(submitButtonElement);
+
       if (submitButton) {
-        submitButton.removeEventListener('click', handleSubmit);
-        submitButton.addEventListener('click', handleSubmit);
-        isListenerAttached = true;
+        submitButton.removeEventListener('click', handleSubmission);
+        submitButton.addEventListener('click', handleSubmission);
       }
-    // }
   }
 
-  async function handleSubmit() {
-    sendMessage({ status: "clicked this shit" });
-    await sleep(5000);
-    document.addEventListener('DOMContentLoaded', () => {
-      const acceptStuff = document.querySelector('span[data-e2e-locator="submission-result"]');
-      const isAccepted = acceptStuff.textContent === 'Accepted';
-      
-      if (!acceptStuff || !isAccepted) {
-        sendMessage({ msg: 'better together! keep a growth mindset 😘 👨‍❤️‍👨'}); // lame as hell
-        return;
-      }
+  async function handleSubmission() {
+    const submitButton = document.querySelector(submitButtonElement);
 
-      sendMessage({ msg: acceptStuff.textContent });
-    });
+    count = 0; 
+    async function callback(changeRecords, observer) {
+      count += 1;
+      if (count == 2) {
+        await sleep(500); // idk how to completely get rid of waiting, 'accept' elements not fully loaded in when this executes
+        const acceptElement = document.querySelector('span[data-e2e-locator="submission-result"]');
+        const isAccepted = acceptElement && acceptElement.textContent === 'Accepted';
+        
+        if (!acceptElement || !isAccepted) { // rejected submission, dont do anything
+          console.log('better together! keep a growth mindset 😘 👨‍❤️‍👨');
+          return;
+        }
+        console.log(acceptElement.textContent);
+        
+        observer.disconnect();
+        count = 0;
+        handleAccepted();
+      }
+    }
+    
+    const options = {
+      attributes: true,
+      subtree: true,
+    };
+
+    const observer = new MutationObserver(callback);
+    observer.observe(submitButton, options);
  }
 
-})()
+  function handleAccepted() {
+    const difficulty = window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3"); // easiest for now, later we can add a modal
+    console.log('Difficulty rating entered:', difficulty);
+
+    // integrate difficulty w/ backend
+  }
+
+
+   // HELPERS
+   function sendMessage(message) {
+    chrome.runtime.sendMessage(message);
+  }
+  // use "await sleep(ms)"
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+
+
+})();
