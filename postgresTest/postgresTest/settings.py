@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1wwh1hv9lh5es&+o-hli)n=d1cml2&#w7i4#nx!4vra0ap7u*%'
+SECRET_KEY = 'django-insecure-v+eu%v2!m040@1%pzrqs!l5gcg$i6%0eh)67b_8l_nj(s*ub9f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,13 +31,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'testdb'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'testdb'
 ]
 
 MIDDLEWARE = [
@@ -76,8 +76,8 @@ WSGI_APPLICATION = 'postgresTest.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'testdb',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'testdb', 
         'USER': 'omerjunedi',
         'PASSWORD': 'ilikedick123',
         'HOST': '127.0.0.1', 
