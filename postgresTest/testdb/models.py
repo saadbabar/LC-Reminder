@@ -1,3 +1,10 @@
+'''
+models.py
+Author: Omer Junedi, Saad Babar, Saif Siddiqui
+Created: May 15, 2024
+Description: Defines the database models
+'''
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -28,9 +35,13 @@ class Problem(models.Model):
     # difficulty = models.CharField(choices=DIFFICULTIES)
 
     # difficulty int 1 to 5
-    difficulty = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    # changing to 1 to 100 for testing purposes
+    #TODO: change back
+    difficulty = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
 
     #TODO: ADD TIMESTAMP
+    # autopopulates with time that object was created
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.problem_name} - {self.difficulty}"

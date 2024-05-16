@@ -67,13 +67,18 @@
   async function handleAccepted() {
     let difficulty = window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3"); // easiest for now, later we can add a modal
     difficulty = Number(difficulty)
-    while (!(1 <= difficulty && difficulty <= 5)) {
+    // TODO: change range back
+    // supposed to be 1 to 5, but making larger for testing purposes
+    while (!(1 <= difficulty && difficulty <= 100)) {
       window.alert("difficulty must be between 1 and 5!")
       difficulty = Number(window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3")); // easiest for now, later we can add a modal
     }
     console.log('Difficulty rating entered:', difficulty);
 
     // integrate difficulty w/ backend
+    let username = document.querySelector('div[class="truncate text-text-primary dark:text-text-primary max-w-full font-medium"]').textContent;
+    console.log("username is ", username);
+
 
     const response = await fetch('http://127.0.0.1:8000/add_problem/', {
 
@@ -82,7 +87,7 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: 'ojunedi', // change this to be dyanmic
+        username: username, // TODO: change this to be dyanmic
         problem_name: cur_problem,
         difficulty: difficulty
 

@@ -1,3 +1,10 @@
+"""
+Author: Omer Junedi
+Created: May 15, 2024
+Description: Sample script for how to use django models to add data to postgres database
+"""
+
+
 import os
 import django
 
