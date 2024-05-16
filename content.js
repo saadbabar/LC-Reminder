@@ -64,7 +64,7 @@
     observer.observe(submitButton, options);
  }
 
-  function handleAccepted() {
+  async function handleAccepted() {
     let difficulty = window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3"); // easiest for now, later we can add a modal
     difficulty = Number(difficulty)
     while (!(1 <= difficulty && difficulty <= 5)) {
@@ -74,6 +74,24 @@
     console.log('Difficulty rating entered:', difficulty);
 
     // integrate difficulty w/ backend
+
+    const response = await fetch('http://127.0.0.1:8000/add_problem/', {
+
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: 'ojunedi', // change this to be dyanmic
+        problem_name: cur_problem,
+        difficulty: difficulty
+
+      }),
+    });
+
+    // const result = await response.json();
+    let passedValue = await new Response(response.body).text();
+    console.log('Response from backend: ', passedValue);
   }
 
 

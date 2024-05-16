@@ -30,6 +30,8 @@ class Problem(models.Model):
     # difficulty int 1 to 5
     difficulty = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 
+    #TODO: ADD TIMESTAMP
+
     def __str__(self):
         return f"{self.problem_name} - {self.difficulty}"
 
