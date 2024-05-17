@@ -42,6 +42,7 @@ class Problem(models.Model):
     #TODO: ADD TIMESTAMP
     # autopopulates with time that object was created
     timestamp = models.DateTimeField(auto_now_add=True)
+    accepted = models.BooleanField()
 
     def __str__(self):
         return f"{self.problem_name} - {self.difficulty}"

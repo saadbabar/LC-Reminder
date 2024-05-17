@@ -45,6 +45,7 @@
         
         if (!acceptElement || !isAccepted) { // rejected submission, dont do anything
           console.log('better together! keep a growth mindset 😘 👨‍❤️‍👨');
+          handleRejected();
           return;
         }
         console.log(acceptElement.textContent);
@@ -64,6 +65,32 @@
     observer.observe(submitButton, options);
  }
 
+  async function handleRejected() {
+
+    // on rejection page no username element pops up
+	// let username = document.querySelector('div[class="truncate text-text-primary dark:text-text-primary max-w-full font-medium"]').textContent;
+    
+    // solution prompt user to enter username?
+    let username = window.prompt("Enter LC Username");
+
+    const response = await fetch('http://127.0.0.1:8000/add_problem/', {
+
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        problem_name: cur_problem,
+        difficulty: 0,
+		    accepted: false
+      }),
+    });
+	  
+
+  }
+
+
   async function handleAccepted() {
     let difficulty = window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3"); // easiest for now, later we can add a modal
     difficulty = Number(difficulty)
@@ -79,7 +106,7 @@
     let username = document.querySelector('div[class="truncate text-text-primary dark:text-text-primary max-w-full font-medium"]').textContent;
     console.log("username is ", username);
 
-
+    // updating the database
     const response = await fetch('http://127.0.0.1:8000/add_problem/', {
 
       method: 'POST', 
@@ -87,16 +114,36 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: username, // TODO: change this to be dyanmic
+        username: username,
         problem_name: cur_problem,
-        difficulty: difficulty
-
+        difficulty: difficulty,
+		    accepted: true
       }),
     });
 
     // const result = await response.json();
     let passedValue = await new Response(response.body).text();
     console.log('Response from backend: ', passedValue);
+
+    // compute problem reccomendations
+    //    1. get all problems
+    const response1 = await fetch("http://127.0.0.1:8000/get_all_problems/", {
+
+      method: 'POST',
+      
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify({
+        username: username
+      })
+
+    });
+    passedValue = await new Response(response1.body).text();
+    console.log(passedValue)
+
+
   }
 
 
