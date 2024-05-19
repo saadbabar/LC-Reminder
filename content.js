@@ -33,7 +33,7 @@
   }
 
   async function handleSubmission() {
-    const submitButton = document.querySelector(submitButtonElement);
+   const submitButton = document.querySelector(submitButtonElement);
 
     count = 0; 
     async function callback(changeRecords, observer) {
@@ -71,6 +71,7 @@
 	// let username = document.querySelector('div[class="truncate text-text-primary dark:text-text-primary max-w-full font-medium"]').textContent;
     
     // solution prompt user to enter username?
+    // Ask for username on installation? use chrome.storage to remember username? 
     let username = window.prompt("Enter LC Username");
 
     const response = await fetch('http://127.0.0.1:8000/add_problem/', {

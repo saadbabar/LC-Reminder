@@ -57,3 +57,18 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 chrome.runtime.onMessage.addListener((obj, sender, response) => {    
     console.log(obj);
 });
+
+
+chrome.runtime.onInstallation.addListener((details) => {
+
+    switch (reason) {
+        case 'install':
+            console.log('chrome extension was installed');
+            chrome.tabs.sendMessage(tabId, {
+                type: 'INSTALLED',
+                problem: null
+            })
+        default:
+            console.log('other reason for installation');
+
+    }
