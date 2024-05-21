@@ -1,3 +1,5 @@
+
+ /*global chrome*/
 /* 
 background.js
 Created: May 9, 2024
@@ -58,17 +60,26 @@ chrome.runtime.onMessage.addListener((obj, sender, response) => {
     console.log(obj);
 });
 
+// abandoning idea for now
+chrome.runtime.onInstalled.addListener(async (details) => {
 
-chrome.runtime.onInstallation.addListener((details) => {
+    const reason = details.reason;
 
     switch (reason) {
-        case 'install':
+        case 'install': {
             console.log('chrome extension was installed');
-            chrome.tabs.sendMessage(tabId, {
+            const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+            console.log(tab.id);
+            await sleep(500);
+            chrome.tabs.sendMessage(tab.id, {
                 type: 'INSTALLED',
                 problem: null
-            })
+            });
+            break;
+        }
         default:
-            console.log('other reason for installation');
+            console.log('other reason for installation: ' + reason);
+            break;
 
     }
+});

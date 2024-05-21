@@ -1,10 +1,9 @@
 // content.js
-
+ /*global chrome*/
 
 
 (() => {
   console.log("content.js script is injected");
-
 
   let cur_problem = "";
   let submitButtonElement = 'button[data-e2e-locator="console-submit-button"]';
@@ -13,10 +12,15 @@
   
   function handleMessage(obj, sender, response) {
     const { type, problem } = obj;
+    console.log("message recieved, the type is " + type);
     if (type === "ACTIVE PROBLEM") {
       cur_problem = problem;
       attachSubmitListener();
     }
+   // else if (type === "INSTALLED") {
+   //   onInstallation();  
+   //   
+   // }
     // chrome.runtime.onMessage.removeListener(handleMessage); ) 
     console.log(`problem: ${problem}`);
     sendMessage({ type: type, problem: problem }); // dummy response so shit doesnt bitch  <--- D1 comment google hire this guy
@@ -35,7 +39,7 @@
   async function handleSubmission() {
    const submitButton = document.querySelector(submitButtonElement);
 
-    count = 0; 
+    let count = 0; 
     async function callback(changeRecords, observer) {
       count += 1;
       if (count == 2) {
@@ -72,7 +76,19 @@
     
     // solution prompt user to enter username?
     // Ask for username on installation? use chrome.storage to remember username? 
-    let username = window.prompt("Enter LC Username");
+    let username = "";
+
+    const result = await chrome.storage.local.get(['username']);
+
+    if (Object.prototype.hasOwnProperty.call(result,'username')) {
+        username = result.username;
+        console.log("chrome.storage.local does have the username" + result.username);
+    } else {
+        username = window.prompt("Enter LC Username");
+        await chrome.storage.local.set({username: username}).then(() => console.log("value is set"));
+    }
+    
+
 
     const response = await fetch('http://127.0.0.1:8000/add_problem/', {
 
@@ -88,6 +104,8 @@
       }),
     });
 	  
+    let passedValue = await new Response(response.body).text();
+    console.log('Response from backend: ', passedValue);
 
   }
 
@@ -147,6 +165,13 @@
 
   }
 
+  function onInstallation() {
+      // abandoning this idea for now, will come back
+      const username = window.prompt("Enter Your LeetCode Username");
+      chrome.storage.local.set({username: username}).then(() => console.log("value is set"));
+      // can retrieve value w/ `chrome.storage.local.get(["username"]).then((result) => {console.log("Value is " + result.username);});`
+      chrome.storage.local.get(["username"]).then((result) => {console.log('Value is ' + result.username);});
+  }  
 
    // HELPERS
    function sendMessage(message) {
@@ -156,7 +181,6 @@
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
 
 
 })();
