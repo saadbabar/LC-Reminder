@@ -4,3 +4,6 @@ node_modules
 env/
 __pycache__/*
 *.pyc
+package.json
+package-lock.json
+eslint.config.mjs
