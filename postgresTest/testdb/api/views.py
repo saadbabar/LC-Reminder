@@ -11,36 +11,38 @@ Related Files:
 """
 
 
-from django.shortcuts import render
 
 # Create your views here.
+import json
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
-import json
-from testdb.models import User, Problem
+from testdb.models import User, Submissions
+from testdb.api.algorithm import SM2
+
+
 
 @csrf_exempt
 def add_problem(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
-        problem_name = data.get('problem_name')
+        problem = data.get('problem')
         difficulty = data.get('difficulty')
-        accepted: bool  = data.get('accepted') 
+        accepted: bool  = data.get('accepted')
 
         user, created = User.objects.get_or_create(username=username)
-        problem = Problem.objects.create(
-            user=user, problem_name=problem_name, difficulty=difficulty, accepted=accepted)
+        problem = Submissions.objects.create(
+            user=user, problem=problem, difficulty=difficulty, accepted=accepted)
 
         print(username)
-        print(problem_name)
+        print(problem)
         print(difficulty)
 
         return JsonResponse({
             "status": "success this is coming from views.py",
             "username": username,
-            "problem_name": problem_name,
+            "problem": problem,
             "difficulty": difficulty,
             "accepted": accepted
         })
@@ -49,7 +51,7 @@ def add_problem(request):
 
 
 @csrf_exempt
-def get_all_problems(request):
+def get_all_submissions(request):
     if request.method == 'POST':
 
         data = json.loads(request.body)
@@ -57,15 +59,24 @@ def get_all_problems(request):
         user = User.objects.get(username=username)
         # might have to convert problems to json friendly data type
         problems = user.problems.all()
+
+        solver = SM2(problems, username)
+        grouped_problems = solver.group_problems()
+        print(grouped_problems)
+
+        for problem in grouped_problems:
+            for p in problem:
+                print(p.user, p.problem, p.timestamp)
+
+
+        # converts QuerySet to List by evaluating all queries
+        problems = list(problems)
+        #print(problems)
+
         problems_json = serializers.serialize('json', problems)
 
-        print(problems_json)
+        #print(json.dumps(problems_json, indent=2))
         # reccomendations = run_algorithm(problems)
-        
         return HttpResponse(
              problems_json, content_type='application/json'
         )
-
-
-
-

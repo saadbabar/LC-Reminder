@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Problem',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('problem_name', models.TextField()),
+                ('problem', models.TextField()),
                 ('difficulty', models.SmallIntegerField(validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)])),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='problems', to='testdb.user')),
             ],

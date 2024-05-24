@@ -1,10 +1,10 @@
 
  /*global chrome*/
-/* 
+/*
 background.js
 Created: May 9, 2024
 Description:
-        Responsible for checking if we're currently on a leetcode problem. Sends a message to the 
+        Responsible for checking if we're currently on a leetcode problem. Sends a message to the
         content script, which manages dom manipulation.
     Related Files:
         - content.js: Handles difficulty popup on accepted submissions
@@ -30,8 +30,8 @@ Description:
 
     ** potential concerns:
 
-    chrome.onUpdated's listeners triggered whenever a url is updated, so whenever we refresh a page, 
-    click on a link, etc., this listeners fired. so this listeners gonna be fired a lot. idk if this 
+    chrome.onUpdated's listeners triggered whenever a url is updated, so whenever we refresh a page,
+    click on a link, etc., this listeners fired. so this listeners gonna be fired a lot. idk if this
     is a concern tho.
 
 */
@@ -56,7 +56,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((obj, sender, response) => {    
+chrome.runtime.onMessage.addListener((obj, sender, response) => {
     console.log(obj);
 });
 

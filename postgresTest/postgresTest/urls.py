@@ -22,5 +22,5 @@ from testdb.api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('add_problem/', views.add_problem, name='add_problem'),
-    path('get_all_problems/', views.get_all_problems, name='get_all_problems')
+    path('get_all_submissions/', views.get_all_submissions, name='get_all_submissions')
 ]

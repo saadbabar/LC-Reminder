@@ -11,7 +11,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'postgresTest.settings')
 django.setup()
 
-from testdb.models import User, Problem
+from testdb.models import User, Submissions
 # ^^
 # imperative to follow this order of import and setup statements otherwise it won't work
 
@@ -20,8 +20,8 @@ def create_user(username):
 	return user
 
 
-def add_problem(user: User, problem_name, difficulty):
-	problem = Problem.objects.create(user=user, problem_name=problem_name, difficulty=difficulty)
+def add_problem(user: User, problem, difficulty):
+	problem = Submissions.objects.create(user=user, problem=problem, difficulty=difficulty)
 	return problem
 
 

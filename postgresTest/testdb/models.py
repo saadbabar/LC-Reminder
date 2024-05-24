@@ -16,34 +16,32 @@ class User(models.Model):
     def __str__(self):
         return self.username
     
-class Problem(models.Model):
-
-    # creates relationship b/w User and Problem model using a one-to-many relationship
-    # i.e one User can have multiple problems associated with them
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='problems')
-    problem_name = models.TextField()
-
-    # could also use models.CharField for the difficulty
-    # depending on how we want to represent it 
-    # DIFFICULTIES = [
-    #     "Very Easy",
-    #     "Easy",
-    #     "Medium",
-    #     "Hard",
-    #     "Very Hard"
-    # ]
-    # difficulty = models.CharField(choices=DIFFICULTIES)
-
-    # difficulty int 1 to 5
+class Submissions(models.Model):
+    '''
+     creates relationship b/w User and Submission model using a one-to-many relationship
+     i.e one User can have multiple submissions associated with them
+    '''
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submissions')
+    problem = models.TextField()
     # changing to 1 to 100 for testing purposes
     #TODO: change back
     difficulty = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
-
-    #TODO: ADD TIMESTAMP
     # autopopulates with time that object was created
     timestamp = models.DateTimeField(auto_now_add=True)
     accepted = models.BooleanField()
 
     def __str__(self):
-        return f"{self.problem_name} - {self.difficulty}"
+        return f"{self.problem} - {self.difficulty}"
 
+class Problems(models.Model):
+    '''
+    Stores all problems and data relevant for spaced repetition algorithm
+    '''
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='problems')
+    problem = models.TextField()
+    interval = models.IntegerField()
+    repetitions = models.IntegerField()
+    EF = models.FloatField()
+
+    def __str__(self) -> str:
+        return f'{self.problem} {self.interval} {self.repetitions} {self.EF}'
