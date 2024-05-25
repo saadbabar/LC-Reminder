@@ -15,7 +15,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
-    
+
 class Submissions(models.Model):
     '''
      creates relationship b/w User and Submission model using a one-to-many relationship
@@ -39,9 +39,9 @@ class Problems(models.Model):
     '''
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='problems')
     problem = models.TextField()
-    interval = models.IntegerField()
-    repetitions = models.IntegerField()
-    EF = models.FloatField()
+    interval = models.IntegerField(default=1)
+    repetitions = models.IntegerField(default=0)
+    EF = models.FloatField(default=2.5)
 
     def __str__(self) -> str:
         return f'{self.problem} {self.interval} {self.repetitions} {self.EF}'

@@ -99,7 +99,7 @@
       body: JSON.stringify({
         username: username,
         problem_name: cur_problem,
-        difficulty: 0,
+        difficulty: 0, // change to be dynamic based on difficulty of LC problem
         accepted: false
       }),
     });
@@ -146,22 +146,22 @@
 
     // compute problem reccomendations
     //    1. get all problems
-    const response1 = await fetch("http://127.0.0.1:8000/get_all_submissions/", {
+    //const response1 = await fetch("http://127.0.0.1:8000/get_all_submissions/", {
 
-      method: 'POST',
+    //  method: 'POST',
 
-      headers: {
-        'Content-Type': 'application/json'
-      },
+    //  headers: {
+    //    'Content-Type': 'application/json'
+    //  },
 
-      body: JSON.stringify({
-        username: username
-      })
+    //  body: JSON.stringify({
+    //    username: username,
+    //    problem_name: cur_problem
+    //  })
 
-    });
-    passedValue = await new Response(response1.body).text();
-    //console.log(passedValue)
-    JSON.stringify(passedValue, null, '\t');
+    //});
+    //passedValue = await new Response(response1.body).text();
+    //JSON.stringify(passedValue, null, '\t');
 
 
   }
