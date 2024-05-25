@@ -41,10 +41,10 @@ def add_problem(request):
 
         solver = SM2(user, problem_name)
         solver.update_priorities(submission)
-
-        print(username)
-        print(problem_name)
-        print(difficulty)
+        print(f'recommendations are {solver.get_recommendations()}')
+        #print(username)
+        #print(problem_name)
+        #print(difficulty)
 
         return JsonResponse({
             "status": "success this is coming from views.py",

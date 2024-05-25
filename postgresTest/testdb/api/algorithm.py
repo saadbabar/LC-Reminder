@@ -1,3 +1,11 @@
+from math import ceil
+import json
+import random
+import datetime
+from itertools import groupby
+from operator import attrgetter
+from testdb.models import User, Submissions, Problems
+from django.db.models import QuerySet
 '''
 algorithm.py
 Authors: Omer Junedi, Saad Babar, Saif Siddiqui
@@ -51,30 +59,30 @@ OJ's Notes 5/21:
     Can either store difficulty of problem in database or find some file online that has all LC problems with difficulties
 
 '''
-from itertools import groupby
-from operator import attrgetter
-from testdb.models import User, Submissions, Problems
-from django.db.models import QuerySet
 
 class SM2:
 
     def __init__(self,user, problem_name):
         '''
-        @problems: all problems for one given user
-        @username: username of the given user
         '''
         self.submissions= user.submissions.all()
         self.user = user
         self.problem_name = problem_name
         self.username = user.username
         self.grouped_problems = []
-        self.CONVERSIONS = {
+        self.CONVERSIONS_CORRECT = {
             1: 3,
             2: 3,
             3: 4,
             4: 5,
             5: 5
         }
+        self.CONVERSIONS_WRONG = {
+            3: 0,
+            2: 1,
+            1: 2
+        }
+
 
         print("SM2 Constructor")
 
@@ -124,7 +132,7 @@ class SM2:
 
 
                         p.repetitions += 1
-                        quality = self.CONVERSIONS.get(submission.difficulty, 4)
+                        quality = self.CONVERSIONS_CORRECT.get(submission.difficulty, 4)
                         newEF = p.EF + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
                         newEF = max(newEF, 1.3)
                         p.EF = newEF
@@ -147,19 +155,53 @@ class SM2:
             elif p.repetitions == 1:
                 p.interval = 6
             else:
-                p.interval = round(p.interval * p.EF)
+                p.interval = ceil(p.interval * p.EF)
 
 
             p.repetitions += 1
-            quality = self.CONVERSIONS.get(submission.difficulty, 4)
-            newEF = p.EF + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
-            newEF = max(newEF, 1.3)
-            p.EF = newEF
+            quality = self.CONVERSIONS_CORRECT.get(submission.difficulty, 4)
         else:
             p.repetitions = 0
             p.interval = 1
+            with open('problemlist.json') as f:
+                d = json.load(f)
+                for problem in d["stat_status_pairs"]:
+                    if problem['stat']['question__title_slug'] == submission.problem:
+                        quality = self.CONVERSIONS_WRONG.get(problem['difficulty'])
+                        break
+            quality = random.randint(1, 3)
 
+        newEF = p.EF + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
+        newEF = max(newEF, 1.3)
+        p.EF = newEF
         p.save()
+
+
+    def get_recommendations(self, num_problems=5):
+        '''
+        returns `num_problems` most recent problems to review determined by SM-2
+        should only be called after `update_priorities`
+        '''
+
+        # 1. For each problem get the most recent submission
+        # 2. add the interval time to the timestamp of the most recent submission
+        # 3. sort and return first x htems
+
+        problems: QuerySet = Problems.objects.all()
+        idk = []
+
+        for problem in problems:
+            submission = Submissions.objects.filter(problem=problem.problem).latest("timestamp")
+            date_to_review = submission.timestamp + datetime.timedelta(days=problem.interval)
+            idk.append((problem, date_to_review))
+
+        def idk_key(t):
+            return t[1]
+
+        idk.sort(key=idk_key)
+        print(f'full sorted list {idk}')
+        return [p[0].problem for p in idk[:num_problems + 1]]
+
 
 
     def SuperMemo2(self, problem, quality):
