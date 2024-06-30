@@ -10,13 +10,6 @@ Description:
         - content.js: Handles difficulty popup on accepted submissions
         - index.html: Main extension interface that provides a link to next recommended question
 */
-
-
-
-
-
-
-
 /*
     - Fired when URL bards updated
     - Checks if we're on leetcode.com/problems

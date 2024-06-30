@@ -1,9 +1,6 @@
 from math import ceil
 import json
-import random
 import datetime
-from itertools import groupby
-from operator import attrgetter
 from testdb.models import User, Submissions, Problems
 from django.db.models import QuerySet
 '''
@@ -62,14 +59,11 @@ OJ's Notes 5/21:
 
 class SM2:
 
-    def __init__(self,user, problem_name):
+    def __init__(self, user, problem_name):
         '''
         '''
-        self.submissions= user.submissions.all()
         self.user = user
         self.problem_name = problem_name
-        self.username = user.username
-        self.grouped_problems = []
         self.CONVERSIONS_CORRECT = {
             1: 3,
             2: 3,
@@ -83,65 +77,9 @@ class SM2:
             1: 2
         }
 
-
         print("SM2 Constructor")
 
-    def group_problems(self):
-        self.submissions= self.submissions.order_by('problem')
-        grouped_problems = []
-        for key, group in groupby(self.submissions, key=attrgetter('problem')):
-            grouped_problems.append(list(group))
-        self.grouped_problems = grouped_problems
-        return grouped_problems
 
-    def initialize_problem(self, submission: Submissions):
-        problem_name = submission.problem
-        try:
-            Problems.objects.get(problem=problem_name)
-        except:
-            print(f'{problem_name} does not exist')
-            Problems.objects.create(user_id=submission.user_id, problem=problem_name, interval=1, repetitions=0, EF=2.5)
-
-    #don't need this function, but keeping it for now
-    def update_problem_data(self):
-
-        x = self.group_problems()
-        submissions_for_given_problem = list(self.submissions.filter(problem__iexact=self.problem_name))
-        print(self.problem_name)
-        print(submissions_for_given_problem)
-        for submission in submissions_for_given_problem:
-            p, created = Problems.objects.get_or_create(user_id=submission.user_id, problem=submission.problem)
-            print(p)
-
-        print("update_problem_data function")
-        #print(self.grouped_problems)
-        for group in x:
-            # only want to update the problem that just submitted
-            if group[0].problem == self.problem_name:
-                for submission in group:
-                    p, created = Problems.objects.get_or_create(user_id=submission.user_id, problem=submission.problem)
-                    # print(created)
-                    if submission.accepted:
-
-                        if p.repetitions == 0:
-                            p.interval = 1
-                        elif p.repetitions == 1:
-                            p.interval = 2
-                        else:
-                            p.interval = round(p.interval * p.EF)
-
-
-                        p.repetitions += 1
-                        quality = self.CONVERSIONS_CORRECT.get(submission.difficulty, 4)
-                        newEF = p.EF + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
-                        newEF = max(newEF, 1.3)
-                        p.EF = newEF
-                    else:
-                        p.repetitions = 0
-                        p.interval = 1
-
-                    p.save()
-                break
     def update_priorities(self, submission):
         '''
         takes most recent submission and updates interval for given problem
@@ -157,19 +95,22 @@ class SM2:
             else:
                 p.interval = ceil(p.interval * p.EF)
 
-
             p.repetitions += 1
             quality = self.CONVERSIONS_CORRECT.get(submission.difficulty, 4)
+
         else:
             p.repetitions = 0
             p.interval = 1
-            with open('problemlist.json') as f:
-                d = json.load(f)
-                for problem in d["stat_status_pairs"]:
-                    if problem['stat']['question__title_slug'] == submission.problem:
-                        quality = self.CONVERSIONS_WRONG.get(problem['difficulty'])
-                        break
-            quality = random.randint(1, 3)
+
+        # setting the submisison difficulty based on LC classification of problem
+        with open('/Users/omerjunedi/Documents/personalProjects/LC-Reminder/postgresTest/testdb/api/problemslist.json') as f:
+            d = json.load(f)
+            for problem in d["stat_status_pairs"]:
+                if problem['stat']['question__title_slug'] == submission.problem and not submission.accepted:
+                    submission.difficulty = self.CONVERSIONS_WRONG.get(problem['difficulty']['level'])
+                    submission.save()
+                    quality = submission.difficulty
+                    break
 
         newEF = p.EF + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
         newEF = max(newEF, 1.3)
@@ -185,21 +126,18 @@ class SM2:
 
         # 1. For each problem get the most recent submission
         # 2. add the interval time to the timestamp of the most recent submission
-        # 3. sort and return first x htems
+        # 3. sort and return first x items
 
         problems: QuerySet = Problems.objects.all()
         idk = []
+        print(type(problems))
 
         for problem in problems:
-            submission = Submissions.objects.filter(problem=problem.problem).latest("timestamp")
+            submission = Submissions.objects.filter(problem=problem.problem, user=self.user).latest("timestamp")
             date_to_review = submission.timestamp + datetime.timedelta(days=problem.interval)
             idk.append((problem, date_to_review))
-
-        def idk_key(t):
-            return t[1]
-
-        idk.sort(key=idk_key)
-        print(f'full sorted list {idk}')
+        print(type(problems))
+        idk.sort(key=lambda x: x[1])
         return [p[0].problem for p in idk[:num_problems + 1]]
 
 
@@ -209,9 +147,3 @@ class SM2:
        given history of answers for some given problem, returns the number of days until problem should be seen again
         '''
         pass
-
-def main():
-    print("Hello, World")
-
-if __name__ == "__main__":
-    main()

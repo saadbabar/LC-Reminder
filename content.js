@@ -4,7 +4,6 @@
 
 (() => {
   console.log("content.js script is injected");
-
   let cur_problem = "";
   let submitButtonElement = 'button[data-e2e-locator="console-submit-button"]';
   chrome.runtime.onMessage.addListener(handleMessage);
@@ -87,25 +86,8 @@
       username = window.prompt("Enter LC Username");
       await chrome.storage.local.set({ username: username }).then(() => console.log("value is set"));
     }
-
-
-
-    const response = await fetch('http://127.0.0.1:8000/add_problem/', {
-
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: username,
-        problem_name: cur_problem,
-        difficulty: 0, // change to be dynamic based on difficulty of LC problem
-        accepted: false
-      }),
-    });
-
-    let passedValue = await new Response(response.body).text();
-    console.log('Response from backend: ', passedValue);
+    // add to database
+    add_problem(username, cur_problem, 0, false);
 
   }
 
@@ -114,11 +96,33 @@
     let difficulty = window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3"); // easiest for now, later we can add a modal
     difficulty = Number(difficulty)
     // TODO: change range back
-    // supposed to be 1 to 5, but making larger for testing purposes
+     //supposed to be 1 to 5, but making larger for testing purposes
     while (!(1 <= difficulty && difficulty <= 100)) {
       window.alert("difficulty must be between 1 and 5!")
       difficulty = Number(window.prompt("Enter difficulty 1 (easiest) to 5 (hardest)", "3")); // easiest for now, later we can add a modal
     }
+
+    //chrome.tabs.executeScript(null, {file: "modal.js"});
+    try {
+      await chrome.scripting.executeScript({
+          target: { tabId: getCurrentTab() },
+          files: ['modal.js']
+      });
+    }
+    catch (err) {
+      console.log(err);
+    }
+
+
+    //chrome.runtime.sendMessage({ type: "SHOW_MODAL" });
+
+    //// Wait for the user to enter the difficulty
+    //difficulty = await new Promise((resolve) => {
+    //    chrome.storage.local.get(['difficulty'], (result) => {
+    //        resolve(result.difficulty);
+    //    });
+    //});
+
     console.log('Difficulty rating entered:', difficulty);
 
     // integrate difficulty w/ backend
@@ -126,42 +130,7 @@
     console.log("username is ", username);
 
     // updating the database
-    const response = await fetch('http://127.0.0.1:8000/add_problem/', {
-
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: username,
-        problem_name: cur_problem,
-        difficulty: difficulty,
-        accepted: true
-      }),
-    });
-
-    // const result = await response.json();
-    let passedValue = await new Response(response.body).text();
-    console.log('Response from backend: ', passedValue);
-
-    // compute problem reccomendations
-    //    1. get all problems
-    //const response1 = await fetch("http://127.0.0.1:8000/get_all_submissions/", {
-
-    //  method: 'POST',
-
-    //  headers: {
-    //    'Content-Type': 'application/json'
-    //  },
-
-    //  body: JSON.stringify({
-    //    username: username,
-    //    problem_name: cur_problem
-    //  })
-
-    //});
-    //passedValue = await new Response(response1.body).text();
-    //JSON.stringify(passedValue, null, '\t');
+    add_problem(username, cur_problem, difficulty, true);
 
 
   }
@@ -182,6 +151,33 @@
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+  async function add_problem(username, problem_name, difficulty, accepted) {
+
+    const response = await fetch('http://127.0.0.1:8000/add_problem/', {
+
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        problem_name: problem_name,
+        difficulty: difficulty,
+        accepted: accepted
+      }),
+    });
+
+    // const result = await response.json();
+    let passedValue = await new Response(response.body).text();
+    console.log('Response from backend: ', passedValue);
+
+  }
+  async function getCurrentTab() {
+  let queryOptions = { active: true, lastFocusedWindow: true };
+  let [tab] = await chrome.tabs.query(queryOptions);
+  return tab.id;
+}
 
 
 })();
