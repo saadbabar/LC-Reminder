@@ -8,14 +8,15 @@
       "tabs",
       "storage",
       "activeTab",
-      "scripting"
+      "scripting",
+      "http://127.0.0.1:8000/"
     ],
     "background": {
       "service_worker": "background.js"
     },
     "content_scripts": [
       {
-        "matches": ["https://*.leetcode.com/problems/*"],
+       "matches": ["https://*.leetcode.com/problems/*", "<all_urls>"],
         "js": ["content.js"]
       }
     ],

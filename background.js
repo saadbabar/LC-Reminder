@@ -1,20 +1,15 @@
-/* 
+
+ /*global chrome*/
+/*
 background.js
 Created: May 9, 2024
 Description:
-        Responsible for checking if we're currently on a leetcode problem. Sends a message to the 
+        Responsible for checking if we're currently on a leetcode problem. Sends a message to the
         content script, which manages dom manipulation.
     Related Files:
         - content.js: Handles difficulty popup on accepted submissions
         - index.html: Main extension interface that provides a link to next recommended question
 */
-
-
-
-
-
-
-
 /*
     - Fired when URL bards updated
     - Checks if we're on leetcode.com/problems
@@ -28,8 +23,8 @@ Description:
 
     ** potential concerns:
 
-    chrome.onUpdated's listeners triggered whenever a url is updated, so whenever we refresh a page, 
-    click on a link, etc., this listeners fired. so this listeners gonna be fired a lot. idk if this 
+    chrome.onUpdated's listeners triggered whenever a url is updated, so whenever we refresh a page,
+    click on a link, etc., this listeners fired. so this listeners gonna be fired a lot. idk if this
     is a concern tho.
 
 */
@@ -54,6 +49,30 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((obj, sender, response) => {    
+chrome.runtime.onMessage.addListener((obj, sender, response) => {
     console.log(obj);
+});
+
+// abandoning idea for now
+chrome.runtime.onInstalled.addListener(async (details) => {
+
+    const reason = details.reason;
+
+    switch (reason) {
+        case 'install': {
+            console.log('chrome extension was installed');
+            const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+            console.log(tab.id);
+            await sleep(500);
+            chrome.tabs.sendMessage(tab.id, {
+                type: 'INSTALLED',
+                problem: null
+            });
+            break;
+        }
+        default:
+            console.log('other reason for installation: ' + reason);
+            break;
+
+    }
 });
