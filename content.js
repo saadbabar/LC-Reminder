@@ -47,7 +47,7 @@
         const isAccepted = acceptElement && acceptElement.textContent === 'Accepted';
 
         if (!acceptElement || !isAccepted) { // rejected submission, dont do anything
-          console.log('better together! keep a growth mindset 😘 👨‍❤️‍👨');
+          console.log('better together! keep a growth mindset');
           handleRejected();
           return;
         }
