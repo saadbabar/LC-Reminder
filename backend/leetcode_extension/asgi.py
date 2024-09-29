@@ -1,5 +1,5 @@
 """
-ASGI config for lc_reminder project.
+ASGI config for leetcode_extension project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lc_reminder.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'leetcode_extension.settings')
 
 application = get_asgi_application()

@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lc_reminder.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'leetcode_extension.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

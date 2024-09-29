@@ -1,0 +1,34 @@
+{
+    "manifest_version": 3,
+    "name": "LeetCode Reminder",
+    "version": "1.0",
+    "description": "A reminder extension for LeetCode",
+    "permissions": [
+      "storage"
+    ],
+    "host_permissions": [
+      "https://leetcode.com/*"
+    ],
+    "action": {
+      "default_popup": "index.html",
+      "default_icon": {
+        "16": "images/leetcode-reminder.png",
+        "48": "images/leetcode-reminder.png",
+        "128": "images/leetcode-reminder.png"
+      }
+    },
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'"
+    },
+    "icons": {
+      "16": "images/leetcode-reminder.png",
+      "48": "images/leetcode-reminder.png",
+      "128": "images/leetcode-reminder.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://leetcode.com/*"],
+        "js": ["content.js"]
+      }
+    ]
+}
